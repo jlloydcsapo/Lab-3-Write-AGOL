@@ -9,7 +9,8 @@ function loadMap(){
             "esri/Graphic",
             "esri/layers/GraphicsLayer",
             "esri/layers/FeatureLayer",
-            "esri/widgets/Editor"], 
+            "esri/widgets/Editor",
+            "esri/widgets/Legend"], 
             
     function(esriConfig, 
             Map, 
@@ -21,7 +22,8 @@ function loadMap(){
             Graphic,
             GraphicsLayer,
             FeatureLayer,
-            Editor) {   
+            Editor,
+            Legend) {   
         
       esriConfig.apiKey = "AAPKdd7c255c653b4b2789e0123c1107c197dv1Ropz0dQZOy89fge9jPPo3WaNTVC2kYIVE-3jKjxEPlZIYYXI7-zrRXkKGPB-z"
 
@@ -210,6 +212,16 @@ function loadMap(){
         }
       };
 
+      const myAirportRenderer = {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://jlloydcsapo.github.io/Lab-3-Write-AGOL/red_plane.png",
+          "width": "18px",
+          "height": "18px"
+        }
+      };
+
       //const to make the airport labels
       const airportLabels = {
         symbol: {
@@ -255,20 +267,26 @@ function loadMap(){
         renderer: airportRenderer,
         definitionExpression: "Fac_Type = 'AIRPORT'", //adding sql to filter for airports
         labelingInfo: [airportLabels] //adding the labels
-      });   
+      }); 
+      
+      airportLayer.title = "Airports";
 
       const helicopterLayer = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_Airports_Lab2_AGOL/FeatureServer",
         renderer: heliportRenderer,
         definitionExpression: "Fac_Type = 'HELIPORT'", //adding sql to filter for airports
         labelingInfo: [airportLabels] //adding the labels
-      });  
+      });
+      
+      helicopterLayer.title = "Helicopters";
 
       const myAirports = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/MyAirports_jcsapo/FeatureServer",
-        renderer: airportRenderer,
+        renderer: myAirportRenderer,
         labelingInfo: [myAirportLabels] 
       });
+
+      myAirports.title = "My Airports";
 
 
       map.add(airportLayer);
@@ -290,8 +308,20 @@ function loadMap(){
         expandIcon: "annotate-tool"
       });
 
-      view.ui.add(editExpand, "top-right")
+      view.ui.add(editExpand, "top-right");
+
+      let legend = new Legend({
+        view: view
+      });
+
+      legend.style = {
+        type: "card",
+        layout: "auto"
+      }
+
+      view.ui.add(legend, "bottom-right");
     }); 
+
 
 };
 
