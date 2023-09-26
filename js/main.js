@@ -230,6 +230,25 @@ function loadMap(){
         }
       };
 
+      const myAirportLabels = {
+        symbol: {
+          type: "text",
+          color: "#FFFFFF",
+          haloColor: "#5E8D74",
+          haloSize: "2px",
+          font: {
+            size: "12px",
+            family: "Noto Sans",
+            style: "italic",
+            weight: "normal"
+          }
+        },
+        labelPlacement: "above-center",
+        labelExpressionInfo: {
+          expression: "$feature.AirportCode"
+        }
+      };
+
 
       const airportLayer = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_Airports_Lab2_AGOL/FeatureServer",
@@ -247,8 +266,8 @@ function loadMap(){
 
       const myAirports = new FeatureLayer({
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/MyAirports_jcsapo/FeatureServer",
-
-        outFields: ["AirportCode"],
+        renderer: airportRenderer,
+        labelingInfo: [myAirportLabels] 
       });
 
 
@@ -265,7 +284,13 @@ function loadMap(){
         layerInfos: [pointInfos]
       });
 
-      view.ui.add(editor, "top-right")
+      const editExpand = new Expand({
+        view,
+        content: editor,
+        expandIcon: "annotate-tool"
+      });
+
+      view.ui.add(editExpand, "top-right")
     }); 
 
 };
